@@ -1,0 +1,29 @@
+Create a declarative Jenkins pipeline for three GitHub repositories—DEV, QA, and PROD. Each repository has three branches: dev, qa, and prod. Each branch contains an index.html file. The pipeline should include choice parameters so that when the job is triggered, the user can select a specific repository and branch. Based on the selection, the pipeline should checkout the corresponding branch from the chosen repository and deploy the index.html file
+
+pipeline {
+    agent any
+
+    parameters {
+        choice(name: 'REPO', choices: ['QA', 'PROD', 'DEV'], description: 'Select repository')
+        string(name: 'BRANCH', defaultValue: 'main', description: 'Branch to deploy')
+    }
+
+    stages {
+        stage('Deploy') {
+            steps {
+                script {
+                    def repoMap = [
+                        'QA': 'https://github.com/shwetaraut815/qa-repo.git',
+                        'PROD': 'https://github.com/shwetaraut815/prod-repo.git',
+                        'DEV': 'https://github.com/shwetaraut815/dev-repo.git'
+                    ]
+                    
+                    git branch: params.BRANCH, url: repoMap[params.REPO], credentialsId: 'git-tokens'
+
+                    sh 'cp -f index.html /var/www/html'
+                    sh 'chmod -R 777 /var/www/html'
+                }
+            }
+        }
+    }
+}
