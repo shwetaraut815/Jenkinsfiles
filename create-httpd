@@ -1,0 +1,21 @@
+pipeline{
+    agent {
+        label "built-in"
+    }
+    stages { 
+        stage ("deploy httpd"){
+             steps {
+                script{
+                sh '''
+                rm -rf *
+                yum install httpd -y
+                systemctl start httpd
+                cd /var/www/html
+                echo "HTTPD web server is running" > index.html
+                chmod -R 777 /var/www/html
+             '''
+            }
+            }
+        }
+    }
+}
