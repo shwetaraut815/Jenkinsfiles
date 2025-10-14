@@ -1,0 +1,31 @@
+pipeline{
+
+      agent{
+	    label {
+		    label "slave-1"
+			customWorkspace "/mnt/test"
+		}
+	  }
+	   
+	  stages {
+            
+           stage ("one"){	
+              
+               steps {
+			         sh "rm -rf *"
+                     echo "helllo alll "
+               }			   
+
+          }
+     }
+	 
+	 post{                          //post build action after all stages done
+	  always{
+	    echo ""build is done"       
+		build "test-job"		//trigger next job
+	    sh "rm -rf *"           //clean workspace after build 
+	  }
+	  
+	 }
+	 
+}
