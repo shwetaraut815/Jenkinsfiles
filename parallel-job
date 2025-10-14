@@ -1,0 +1,42 @@
+pipeline{
+    agent any 
+	
+	stages{
+	    stage ("one"){
+		  steps{
+		    echo "hello 1st stage"
+		  }
+		  steps{
+		    echo "hello 2nd step"
+		  }
+		}
+		stage ("parallel stage"){
+		    paralle{
+			  stage("p1"){
+			     step {
+				    echo "paralle stage one"
+				 }
+			  }
+			  stage("p2"){
+			     step{
+				   echo "parallel stage 2"
+				 }
+			  }
+			  stage("p3"){
+			     step {
+				   echo "parallel stage 3"
+				   mkdir test
+				   
+				 }
+			  }
+			}
+			
+		}
+		stage ("two"){
+		   step {
+		   echo "stage two"
+		   }
+        }	
+    }
+  }	
+}
