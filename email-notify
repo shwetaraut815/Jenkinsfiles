@@ -1,0 +1,50 @@
+pipeline {
+    agent any
+
+    environment {
+        RECIPIENTS = 'rautpiyush683@gmail.com'
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building...'
+                // simulate failure for testing
+                // error("Simulating failure")
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Testing...'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Deploying...'
+            }
+        }
+    }
+
+    post {
+        success {
+            emailext(
+                subject: "✅ Build Successful: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """<p>Good news! The Jenkins build <b>${env.JOB_NAME} #${env.BUILD_NUMBER}</b> completed successfully.</p>
+                         <p>Check console output <a href="${env.BUILD_URL}">here</a>.</p>""",
+                to: "${RECIPIENTS}",
+                mimeType: 'text/html'
+            )
+        }
+        failure {
+            emailext(
+                subject: "❌ Build Failed: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """<p>Build <b>${env.JOB_NAME} #${env.BUILD_NUMBER}</b> failed.</p>
+                         <p>Check logs: <a href="${env.BUILD_URL}">Jenkins console</a></p>""",
+                to: "${RECIPIENTS}",
+                mimeType: 'text/html'
+            )
+        }
+    }
+}
